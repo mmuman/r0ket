@@ -1,6 +1,21 @@
+#ifdef SIMULATOR
+#define _POSIX_C_SOURCE 199309
+#include <time.h>
+#endif
+
 #include <sysdefs.h>
 #include "lpc134x.h"
 
+#ifdef SIMULATOR
+void delayms(uint32_t ms)
+{
+  struct timespec t;
+  t.tv_sec = ms / 1000;
+  t.tv_nsec = (ms % 1000) * 1000000;
+
+  nanosleep (&t, NULL);
+}
+#else
 /**************************************************************************/
 /*! 
     Approximates a 1 millisecond delay using "nop".  This is less
@@ -22,3 +37,4 @@ void delayms(uint32_t ms)
     delay--;
   }
 }
+#endif
